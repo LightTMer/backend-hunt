@@ -10,18 +10,53 @@ generator client {
   recursive_type_depth = 5
 }
 
+
 // data models
 model Article {
-  id        Int     @id @default(autoincrement())
-  title     String
-  views     Int     @default(0)
-  published Boolean @default(false)
-  author_id Int?
+  id                Int       @id @default(autoincrement())
+  title             String
+  body              String
+  author_id         Int?
+  published         Boolean   @default(false)
+  language_id       Int     @default(0)
+  views             Int       @default(0)
+}
+
+model Language {
+  id                Int       @id @default(autoincrement())
+  name              String
 }
 
 model User {
-  id    Int       @id @default(autoincrement())
-  email String    @unique
-  name  String?
-  posts Int[]
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  password          String
+  salt              String
+  name              String
+  posts             Int[]
+}
+
+model Forum {
+  id                Int       @id @default(autoincrement())
+  name              String
+  threads           Int[]
+}
+
+model Thread {
+  id                Int       @id @default(autoincrement())
+  name              String
+  description       String
+  posts             Int[]
+  total_upvotes     Int       @default(0)
+  total_downvotes   Int       @default(0)
+  rating            Int       @default(0)
+}
+
+model Post {
+  id                Int       @id @default(autoincrement())
+  title             String
+  body              String
+  upvotes           Int       @default(0)
+  downvotes         Int       @default(0)
+  rating            Int       @default(0)
 }
