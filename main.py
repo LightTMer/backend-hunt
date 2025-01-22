@@ -1,5 +1,5 @@
 from prisma import Prisma
-from prisma.models import Article
+from prisma.models import Article, Post
 from fastapi import FastAPI, HTTPException
 
 
@@ -42,9 +42,15 @@ async def post_article(article: Article):
         data={
             "id": article.id,
             "title": article.title,
-            "views": article.views,
+            "body": article.body,
+            # "post": {
+            #     'connect': {
+            #         'id': post.id
+            #     }
+            # },
             "published": article.published,
-            "author_id": article.author_id,
+            "language_id": article.language_id,
+            "views": article.views,
         },
     )
     await db.disconnect()
@@ -64,15 +70,28 @@ async def patch_article(article: Article):
             "create": {
                 "id": article.id,
                 "title": article.title,
-                "views": article.views,
+                "body": article.body,
+                # "post": {
+                #     'connect': {
+                #         'id': post.id
+                #     }
+                # },
                 "published": article.published,
-                "author_id": article.author_id,
+                "language_id": article.language_id,
+                "views": article.views,
             },
             "update": {
+                "id": article.id,
                 "title": article.title,
-                "views": article.views,
+                "body": article.body,
+                # "post": {
+                #     'connect': {
+                #         'id': post.id
+                #     }
+                # },
                 "published": article.published,
-                "author_id": article.author_id,
+                "language_id": article.language_id,
+                "views": article.views,
             },
         },
     )

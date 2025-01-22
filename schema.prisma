@@ -16,15 +16,18 @@ model Article {
   id                Int       @id @default(autoincrement())
   title             String
   body              String
-  author_id         Int?
+  post              Post      @relation(fields: [post_id], references: [id])
+  post_id           Int       @unique
   published         Boolean   @default(false)
-  language_id       Int     @default(0)
+  language          Language  @relation(fields: [language_id], references: [id])
+  language_id       Int       @default(0)
   views             Int       @default(0)
 }
 
 model Language {
   id                Int       @id @default(autoincrement())
   name              String
+  articles          Article[]
 }
 
 model User {
@@ -33,20 +36,22 @@ model User {
   password          String
   salt              String
   name              String
-  posts             Int[]
+  posts             Post[]
 }
 
 model Forum {
   id                Int       @id @default(autoincrement())
   name              String
-  threads           Int[]
+  threads           Thread[]
 }
 
 model Thread {
   id                Int       @id @default(autoincrement())
   name              String
   description       String
-  posts             Int[]
+  posts             Post[]
+  forum             Forum     @relation(fields: [forum_id], references: [id])
+  forum_id          Int
   total_upvotes     Int       @default(0)
   total_downvotes   Int       @default(0)
   rating            Int       @default(0)
@@ -56,6 +61,11 @@ model Post {
   id                Int       @id @default(autoincrement())
   title             String
   body              String
+  author            User      @relation(fields: [author_id], references: [id])
+  author_id         Int
+  thread            Thread    @relation(fields: [thread_id], references: [id])
+  thread_id         Int
+  article           Article?
   upvotes           Int       @default(0)
   downvotes         Int       @default(0)
   rating            Int       @default(0)
