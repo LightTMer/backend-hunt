@@ -1,8 +1,10 @@
 from prisma import Prisma
 from prisma.models import Article, Post, Forum, Thread, Post
 from fastapi import FastAPI, HTTPException
+
 from prisma.partials import ThreadPartial, ForumPartial, PostPartial
 from contextlib import asynccontextmanager
+
 
 app = FastAPI()
 db = Prisma(auto_register=True)
