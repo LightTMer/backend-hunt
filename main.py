@@ -1,10 +1,18 @@
 from prisma import Prisma
 from prisma.models import Article, Post
 from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
 
 
 app = FastAPI()
 db = Prisma(auto_register=True)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await db.connect()
+    yield
+    await db.disconnect()
 
 
 @app.get("/")
@@ -15,9 +23,7 @@ async def root():
 # SAMPLE CRUD BEGIN
 @app.get("/articles/")
 async def get_all_articles():
-    await db.connect()
     articles = await db.article.find_many()
-    await db.disconnect()
 
     if articles is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -26,9 +32,7 @@ async def get_all_articles():
 
 @app.get("/articles/{article_id}")
 async def get_article(article_id: int):
-    await db.connect()
     article = await db.article.find_first(where={"id": article_id})
-    await db.disconnect()
 
     if article is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -37,7 +41,6 @@ async def get_article(article_id: int):
 
 @app.post("/articles/")
 async def post_article(article: Article):
-    await db.connect()
     result = await db.article.create(
         data={
             "id": article.id,
@@ -53,14 +56,12 @@ async def post_article(article: Article):
             "views": article.views,
         },
     )
-    await db.disconnect()
 
     return result
 
 
 @app.patch("/articles/")
 async def patch_article(article: Article):
-    await db.connect()
     # uses UPSERT for creating the record in case one does not exist
     result = await db.article.upsert(
         where={
@@ -95,7 +96,6 @@ async def patch_article(article: Article):
             },
         },
     )
-    await db.disconnect()
 
     if result is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -104,9 +104,7 @@ async def patch_article(article: Article):
 
 @app.delete("/articles/{article_id}")
 async def delete_article(article_id: int):
-    await db.connect()
     result = await db.article.delete(where={"id": article_id})
-    await db.disconnect()
 
     if result is None:
         raise HTTPException(status_code=404, detail="Item not found")
