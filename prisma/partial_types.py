@@ -1,4 +1,4 @@
-from prisma.models import Thread, Forum
+from prisma.models import Thread, Forum, Post
 
 Thread.create_partial(
     "ThreadPartial",
