@@ -18,6 +18,8 @@ model Article {
   body              String
   post              Post      @relation(fields: [post_id], references: [id])
   post_id           Int       @unique
+  author            User      @relation(fields: [author_id], references: [id])
+  author_id         Int
   published         Boolean   @default(false)
   language          Language  @relation(fields: [language_id], references: [id])
   language_id       Int       @default(0)
@@ -37,6 +39,7 @@ model User {
   salt              String
   name              String
   posts             Post[]
+  articles          Article[]
 }
 
 model Forum {
